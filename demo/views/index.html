@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket demo</title>
+  </head>
+  <body>
+    <h1>WebSocket demo</h1>
+    <form action="javascript:;" id="send-message">
+      <input type="text" id="message">
+      <input type="submit">
+    </form>
+    <ul id="messages"></ul>
+    <script>
+      function appendMessage(message) {
+        var element = document.createElement('li');
+        element.innerText = message;
+
+        var messages = document.querySelector('#messages');
+        messages.appendChild(element);
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        ws = new WebSocket('ws://localhost:8080');
+
+        ws.onerror = function(event) {
+          appendMessage(':(');
+        }
+
+        ws.onmessage = function(event) {
+          appendMessage(event.data);
+        };
+
+        var form = document.querySelector('#send-message');
+        form.onsubmit = function(event) {
+          event.preventDefault();
+
+          var message = document.querySelector('#message');
+          ws.send(message.value);
+        }
+      });
+    </script>
+  </body>
+</html>

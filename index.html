@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="/css/bespoke-theme-templ.css" rel="stylesheet">
+    <link href="/css/solarized-dark.css" rel="stylesheet">
+  </head>
+  <body>
+    <article>
+      <section>
+        <h1>Realtime updates with <strong>WebSocket</strong></h1>
+        <ul>
+          <li class="bespoke-bullet bespoke-bullet-active bespoke-bullet-current">Patricio Mac Adden <a href="https://twitter.com/maxawen">@maxawen</a> / <a href="https://github.com/patriciomacadden">patriciomacadden</a></li>
+        </ul>
+      </section>
+      <section data-bespoke-backdrop="emphatic">
+        <div class="brand"><img src="/img/brand.png"></div>
+        <div class="brain"><img src="/img/brain.png"></div>
+      </section>
+      <section>
+        <h1 class="bullet">Agenda</h1>
+        <ul>
+          <li class="bullet">Realtime updates: alternativas</li>
+          <li class="bullet"><strong>WebSockets</strong></li>
+          <li class="bullet">Caso de éxito</li>
+          <li class="bullet">Ejemplo: em-websocket + Javascript API</li>
+          <li class="bullet">Ovación de pie (si todo sale bien!)</li>
+        </ul>
+      </section>
+      <section>
+        <h1>Alternativas</h1>
+      </section>
+      <section>
+        <ul>
+          <li class="bullet">Polling</li>
+          <li class="bullet">Faye (pub/sub messaging system based on the Bayeux protocol)</li>
+          <li class="bullet">SSE (Server-Sent Events, Event Source API)</li>
+          <li class="bullet"><strong>WebSocket</strong></li>
+        </ul>
+      </section>
+      <section>
+        <h1><strong>WebSocket</strong></h1>
+      </section>
+      <section>
+        <h1 class="bullet">Características</h1>
+        <ul>
+          <li class="bullet">Define una conexión <strong>full-duplex</strong> que opera sobre <strong>un sólo socket</strong></li>
+          <li class="bullet"><strong>Reduce el tráfico y la latencia de la red</strong> comparado con polling</li>
+          <li class="bullet"><strong>Atraviesa firewalls y proxies</strong></li>
+          <li class="bullet">Soportado por todos los navegadores modernos</li>
+        </ul>
+      </section>
+      <section>
+        <h1 class="bullet">Protocolo</h1>
+        <ul>
+          <li class="bullet">Diseñado para funcionar en la infraestructura web existente</li>
+          <li class="bullet">Una conexión <strong>WebSocket</strong> comienza su ciclo de vida como una conexión <strong>HTTP</strong></li>
+          <li class="bullet">El cambio del protocolo <strong>HTTP</strong> a <strong>WebSocket</strong> es llamado <strong>Handshake</strong></li>
+        </ul>
+      </section>
+      <section>
+        <h1>Handshake</h1>
+      </section>
+      <section>
+        <p>El cliente envía un request al servidor indicando que quiere cambiar protocolos de <strong>HTTP</strong> a <strong>WebSocket</strong> mediante el header <strong>Upgrade</strong>.</p>
+<pre style="margin-top: 20px"><code>GET ws://echo.websocket.org/?encoding=text HTTP/1.1
+Origin: http://websocket.org
+Cookie: __utma=99as
+Connection: Upgrade
+Host: echo.websocket.org
+Sec-WebSocket-Key: uRovscZjNol/umbTt5uKmw==
+Upgrade: websocket
+Sec-WebSocket-Version: 13
+</code></pre>
+      </section>
+      <section>
+        <p>Si el servidor entiende el protocolo <strong>WebSocket</strong>, acepta cambiar el protocolo mediante el header <strong>Upgrade</strong>.</p>
+<pre style="margin-top: 20px"><code>HTTP/1.1 101 WebSocket Protocol Handshake
+Date: Fri, 10 Feb 2012 17:38:18 GMT
+Connection: Upgrade
+Server: Kaazing Gateway
+Upgrade: WebSocket
+Access-Control-Allow-Origin: http://websocket.org
+Access-Control-Allow-Credentials: true
+Sec-WebSocket-Accept: rLHCkw/SKsO9GAH/ZSFhBATDKrU=
+Access-Control-Allow-Headers: content-type
+</code></pre>
+        <p>En este momento la conexión <strong>HTTP</strong> es reemplazada por la conexión <strong>WebSocket</strong> en la misma conexión <strong>TCP/IP</strong> subyacente.</p>
+      </section>
+      <section>
+        <h1>Caso de éxito</h1>
+      </section>
+      <section>
+        <h1 class="bullet">Motivación</h1>
+        <ul>
+          <li class="bullet">Cliente proveedor de digital signage</li>
+          <li class="bullet">Dispositivos de digital signage ya desarrollados, algunos <strong>detrás de firewalls</strong></li>
+          <li class="bullet">Dispositivos de digital signage por desarrollar</li>
+          <li class="bullet">Desarrollar plataforma de administración de advertising</li>
+          <li class="bullet">Desarrollar plataforma de comunicación entre plataforma de administración y dispositivos</li>
+        </ul>
+      </section>
+      <section>
+        <h1 class="bullet">Soluciones</h1>
+        <ul>
+          <li class="bullet">Plataforma de comunicación: <strong>WebSocket</strong></li>
+          <li class="bullet">Plataforma de administración: Realtime updates con <strong>WebSocket</strong></li>
+        </ul>
+      </section>
+      <section>
+        <h1 class="bullet">Realtime updates con <strong>WebSocket</strong></h1>
+        <ul>
+          <li class="bullet">Dos servidores <strong>WebSocket</strong> (<strong>EventMachine</strong>)
+            <ul>
+              <li class="bullet">1 para la <strong>plataforma de comunicación</strong></li>
+              <li class="bullet">1 para la <strong>plataforma de administración</strong> (realtime updates en el browser)</li>
+            </ul>
+          </li>
+          <li class="bullet"><strong>Redis</strong> para pub/sub</li>
+          <li class="bullet">Los <strong>dispositivos</strong> se conectan a la <strong>platarforma de comunicación</strong></li>
+          <li class="bullet">Los <strong>browsers</strong> (usuarios) se conectan a la <strong>platarforma de administración</strong></li>
+        </ul>
+      </section>
+      <section>
+        <h1 class="bullet">Un caso puntual: actualizar una página cuando un dispositivo se conecta</h1>
+        <ul>
+          <li class="bullet">El <strong>dispositivo</strong> se conecta a la <strong>plataforma de comunicación</strong></li>
+          <li class="bullet">Se publica en <strong>Redis</strong>, dando aviso a la <strong>plataforma de administración</strong></li>
+          <li class="bullet">La <strong>plataforma de administración</strong> envía un mensaje a los <strong>browsers</strong>, que actualizan la página dando cuenta de la conexión del <strong>dispositivo</strong></li>
+        </ul>
+      </section>
+      <section>
+        <h1 class="bullet">Ejemplo</h1>
+        <h2 class="bullet">Aplicación que envía un mensaje al servidor WebSocket y recibe una respuesta, la cual imprime en la pantalla.</h2>
+      </section>
+      <section>
+        <h1 class="bullet">Antes de empezar</h1>
+        <ul>
+          <li class="bullet">
+            Gemas
+            <ul>
+              <li class="bullet">em-websocket: para el servidor de WebSocket</li>
+              <li class="bullet">rack: para la web app</li>
+            </ul>
+          </li>
+          <li class="bullet">Gemfile</li>
+        </ul>
+<pre class="bullet" style="margin-top: 20px"><code data-language="ruby">source 'https://rubygems.org'
+
+gem 'em-websocket'
+gem 'rack'
+</code></pre>
+      </section>
+      <section>
+        <h1>Servidor WebSocket</h1>
+<pre class="bullet" style="margin-top: 20px"><code data-language="ruby">require 'bundler/setup'
+require 'em-websocket'
+
+EM.run do
+  EM::WebSocket.start host: '0.0.0.0', port: '8080' do |ws|
+    ws.onmessage do |message|
+      ws.send "[#{Time.now.strftime '%D %T'}] #{message}"
+    end
+  end
+end
+</code></pre>
+      </section>
+      <section>
+        <h1>Web app</h1>
+<pre class="bullet" style="margin-top: 20px"><code data-language="ruby">require 'bundler/setup'
+require 'rack'
+
+app = ->(env) do
+  tpl = File.read File.join(__dir__, 'views', 'index.html')
+  Rack::Response.new [tpl], 200, {}
+end
+
+run app
+</code></pre>
+      </section>
+      <section>
+        <h1>Template: WebSocket Javascript API</h1>
+<pre class="bullet" style="margin-top: 20px"><code data-language="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;WebSocket demo&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;WebSocket demo&lt;/h1&gt;
+    &lt;form action="javascript:;" id="send-message"&gt;
+      &lt;input type="text" id="message"&gt;
+      &lt;input type="submit"&gt;
+    &lt;/form&gt;
+    &lt;ul id="messages"&gt;&lt;/ul&gt;
+    &lt;script&gt;
+      function appendMessage(message) {
+        var element = document.createElement('li');
+        element.innerText = message;
+
+        var messages = document.querySelector('#messages');
+        messages.appendChild(element);
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        ws = new WebSocket('ws://localhost:8080');
+
+        ws.onerror = function(event) {
+          appendMessage(':(');
+        }
+
+        ws.onmessage = function(event) {
+          appendMessage(event.data);
+        };
+
+        var form = document.querySelector('#send-message');
+        form.onsubmit = function(event) {
+          event.preventDefault();
+
+          var message = document.querySelector('#message');
+          ws.send(message.value);
+        }
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+      </section>
+      <section>
+        <h1>¿Preguntas?</h1>
+      </section>
+      <section>
+        <h1><strong>¡Gracias!</strong></h1>
+      </section>
+    </article>
+    <script src="/js/bespoke.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-backdrop.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-bullets.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-classes.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-cursor.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-hash.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-keys.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-progress.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-scale.min.js" type="text/javascript"></script>
+    <script src="/js/bespoke-theme-voltaire.min.js" type="text/javascript"></script>
+    <script src="/js/rainbow.min.js" type="text/javascript"></script>
+    <script src="/js/generic.js" type="text/javascript"></script>
+    <script src="/js/html.js" type="text/javascript"></script>
+    <script src="/js/javascript.js" type="text/javascript"></script>
+    <script src="/js/ruby.js" type="text/javascript"></script>
+    <script>
+      bespoke.from('article', [
+        bespoke.plugins.backdrop(),
+        bespoke.plugins.bullets('li, .bullet'),
+        bespoke.plugins.classes(),
+        bespoke.plugins.cursor(),
+        bespoke.plugins.keys(),
+        bespoke.plugins.hash(),
+        bespoke.plugins.progress(),
+        bespoke.plugins.scale(),
+        bespoke.themes.voltaire()
+      ]);
+    </script>
+  </body>
+</html>

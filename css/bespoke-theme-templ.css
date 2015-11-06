@@ -1,0 +1,66 @@
+article pre {
+  text-align: left;
+  background-color: rgb(12, 32, 41) !important;
+}
+
+strong {
+  color: #c74dc7;
+}
+
+.bespoke-parent {
+  background: #333;
+}
+
+.emphatic {
+  background: #eaeaea;
+}
+
+.brand {
+  position: relative;
+  z-index: 10;
+}
+
+.brain {
+  margin: -104px 0 0 280px;
+}
+
+.brain img {
+  max-width: 100%;
+  -webkit-animation: brain 1s linear;
+  -moz-animation: brain 1s linear;
+  -o-animation: brain 1s linear;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes brain {
+  from {
+    -webkit-transform: scale(1);
+  }
+
+  to {
+    -webkit-transform: scale(1.2);
+  }
+}
+
+@-moz-keyframes brain {
+  from {
+    -moz-transform: scale(1);
+  }
+
+  to {
+    -moz-transform: scale(1.3);
+  }
+}
+
+@-o-keyframes brain {
+  from {
+    -o-transform: scale(1);
+  }
+
+  to {
+    -o-transform: scale(1.3);
+  }
+}
